@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 로또 번호 생성기</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-gradient);
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #4A90E2, #67B26F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ball-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2.5rem;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        .ball {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.2), 2px 4px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .ball.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-generate {
+            background: #4A90E2;
+            color: white;
+            flex-grow: 2;
+        }
+
+        .btn-generate:hover { background: #357ABD; transform: translateY(-2px); }
+        .btn-generate:active { transform: translateY(0); }
+
+        .btn-copy {
+            background: #fff;
+            color: #4A90E2;
+            border: 1px solid #4A90E2;
+            padding: 14px;
+        }
+        
+        .btn-copy:hover { background: #f0f7ff; }
+
+        .history-section {
+            margin-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 1.5rem;
+            text-align: left;
+        }
+
+        .history-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 12px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .history-ball {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .ball { width: 40px; height: 40px; font-size: 1rem; }
+            .container { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Lotto Fortune</h1>
+        
+        <div class="ball-container" id="lotto-balls">
+            <!-- Balls will be injected here -->
+            <div style="color: #aaa; font-style: italic;">행운의 번호를 생성해보세요!</div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-generate" onclick="generateLotto()">행운 번호 생성하기</button>
+            <button class="btn-copy" onclick="copyToClipboard()" title="복사">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+        </div>
+
+        <div class="history-section" id="history-section" style="display: none;">
+            <span class="history-title">최근 생성 기록</span>
+            <div id="history-list"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentNumbers = [];
+        const historyList = [];
+
+        function generateLotto() {
+            const numbers = [];
+            while(numbers.length < 6) {
+                const num = Math.floor(Math.random() * 45) + 1;
+                if(!numbers.includes(num)) {
+                    numbers.push(num);
+                }
+            }
+            numbers.sort((a, b) => a - b);
+            currentNumbers = [...numbers];
+
+            const container = document.getElementById('lotto-balls');
+            container.innerHTML = ''; 
+
+            // 순차적 애니메이션 등장
+            numbers.forEach((num, index) => {
+                const ball = document.createElement('div');
+                ball.className = 'ball';
+                ball.innerText = num;
+                ball.style.backgroundColor = getBallColor(num);
+                container.appendChild(ball);
+
+                setTimeout(() => {
+                    ball.classList.add('show');
+                }, index * 150);
+            });
+
+            // 히스토리에 추가 (최대 5개)
+            addToHistory(numbers);
+        }
+
+        function getBallColor(num) {
+            if (num <= 10) return '#fbc400'; // 노랑
+            if (num <= 20) return '#69c8f2'; // 파랑
+            if (num <= 30) return '#ff7272'; // 빨강
+            if (num <= 40) return '#aaa';    // 회색
+            return '#b0d840';                // 초록
+        }
+
+        function addToHistory(numbers) {
+            const section = document.getElementById('history-section');
+            const listContainer = document.getElementById('history-list');
+            section.style.display = 'block';
+
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            
+            numbers.forEach(num => {
+                const hBall = document.createElement('div');
+                hBall.className = 'history-ball';
+                hBall.innerText = num;
+                hBall.style.backgroundColor = getBallColor(num);
+                historyItem.appendChild(hBall);
+            });
+
+            listContainer.prepend(historyItem);
+
+            if (listContainer.children.length > 5) {
+                listContainer.removeChild(listContainer.lastChild);
+            }
+        }
+
+        function copyToClipboard() {
+            if (currentNumbers.length === 0) {
+                alert('먼저 번호를 생성해주세요!');
+                return;
+            }
+            const text = currentNumbers.join(', ');
+            navigator.clipboard.writeText(text).then(() => {
+                alert('번호가 복사되었습니다: ' + text);
+            });
+        }
+    </script>
+</body>
+</html>
