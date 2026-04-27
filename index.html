@@ -3,174 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 번호 분석 추천기</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>프리미엄 로또 번호 생성기 & AI 분석</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        .lotto-ball {
-            width: 40px;
-            height: 40px;
+        :root {
+            --primary-color: #4A90E2;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            margin: 0;
+            padding: 20px 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-gradient);
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #4A90E2, #67B26F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ball-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2rem;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        .ball {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.2), 2px 4px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .ball.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-generate {
+            background: #4A90E2;
+            color: white;
+            flex-grow: 2;
+        }
+
+        .btn-generate:hover { background: #357ABD; transform: translateY(-2px); }
+        .btn-generate:active { transform: translateY(0); }
+
+        .btn-copy {
+            background: #fff;
+            color: #4A90E2;
+            border: 1px solid #4A90E2;
+            padding: 14px;
+        }
+        
+        .btn-copy:hover { background: #f0f7ff; }
+
+        .analysis-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            text-align: left;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-analyze {
+            width: 100%;
+            background: linear-gradient(to right, #67B26F, #4ca2cd);
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .analysis-result {
+            background: rgba(255,255,255,0.4);
+            border-radius: 15px;
+            padding: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-cols: 2;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        .stat-label { color: #888; display: block; margin-bottom: 3px; }
+        .stat-value { font-weight: bold; color: #333; }
+
+        .rec-item {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .rec-label { font-size: 0.75rem; font-weight: bold; color: #666; margin-bottom: 5px; display: block; }
+
+        .history-item {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 12px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .history-ball, .rec-ball {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 0.7rem;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            margin: 2px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        .bg-ball-1 { background-color: #fbc400; } /* 1-10 */
-        .bg-ball-2 { background-color: #69c8f2; } /* 11-20 */
-        .bg-ball-3 { background-color: #ff7272; } /* 21-30 */
-        .bg-ball-4 { background-color: #aaa; }    /* 31-40 */
-        .bg-ball-5 { background-color: #b0d840; } /* 41-45 */
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #loader {
+            display: none;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #4A90E2;
+            margin: 10px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .ball { width: 40px; height: 40px; font-size: 1rem; }
+            .container { padding: 1.5rem; width: 95%; }
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center py-10 px-4">
-    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-6">
-        <h1 class="text-2xl font-bold text-center mb-2">🎰 로또 번호 분석기</h1>
-        <p class="text-gray-500 text-sm text-center mb-6">최근 100주 당첨 통계 기반 추천</p>
+<body>
 
-        <button id="analyzeBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200 mb-6">
-            데이터 분석 및 번호 생성
-        </button>
-
-        <div id="status" class="text-sm text-center text-blue-600 mb-4 hidden">
-            데이터 수집 중... (<span id="progress">0</span>/100)
+    <div class="container">
+        <h1>Lotto Fortune</h1>
+        
+        <div class="ball-container" id="lotto-balls">
+            <div style="color: #aaa; font-style: italic;">행운의 번호를 생성해보세요!</div>
         </div>
 
-        <div id="resultArea" class="hidden">
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-orange-50 p-3 rounded-lg">
-                    <p class="text-xs text-orange-600 font-bold mb-1">🔥 Hot 번호</p>
-                    <div id="hotNums" class="text-sm font-bold"></div>
-                </div>
-                <div class="bg-blue-50 p-3 rounded-lg">
-                    <p class="text-xs text-blue-600 font-bold mb-1">❄️ Cold 번호</p>
-                    <div id="coldNums" class="text-sm font-bold"></div>
-                </div>
-            </div>
+        <div class="button-group">
+            <button class="btn-generate" onclick="generateLotto()">행운 번호 생성하기</button>
+            <button class="btn-copy" onclick="copyToClipboard()" title="복사">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+        </div>
 
-            <div class="space-y-4">
-                <h3 class="font-bold text-gray-700 border-b pb-1">🎯 추천 조합</h3>
-                <div id="recommendations" class="space-y-4"></div>
+        <div class="analysis-section">
+            <span class="section-title">📊 AI 통계 분석 추천</span>
+            <button class="btn-analyze" id="analyzeBtn" onclick="runAnalysis()">최근 100주 데이터 분석하기</button>
+            
+            <div id="loader">데이터 수집 및 분석 중... (<span id="progress">0</span>/100)</div>
+            
+            <div id="analysis-result" class="analysis-result">
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <div class="stat-box" style="flex: 1;">
+                        <span class="stat-label">🔥 가장 많이 나온</span>
+                        <span id="hot-numbers" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-box" style="flex: 1;">
+                        <span class="stat-label">❄️ 가장 적게 나온</span>
+                        <span id="cold-numbers" class="stat-value">-</span>
+                    </div>
+                </div>
+                
+                <div id="recommendation-list">
+                    <!-- 추천 번호가 여기에 들어감 -->
+                </div>
             </div>
         </div>
 
-        <div id="notice" class="mt-8 text-[10px] text-gray-400 text-center">
-            ※ 실시간 데이터 수집 실패 시 시뮬레이션 데이터가 사용됩니다.<br>
-            당첨을 보장하지 않는 통계 참고용 프로그램입니다.
+        <div class="analysis-section" id="history-section" style="display: none; border-top: none; margin-top: 0.5rem;">
+            <span class="section-title">🕒 최근 생성 기록</span>
+            <div id="history-list"></div>
         </div>
     </div>
 
     <script>
+        let currentNumbers = [];
         const API_PROXY = "https://api.allorigins.win/get?url=";
         const LOTTO_API = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=";
 
-        async function fetchLottoData(count = 100) {
-            // 현재 회차 계산
+        function getBallColor(num) {
+            if (num <= 10) return '#fbc400'; // 노랑
+            if (num <= 20) return '#69c8f2'; // 파랑
+            if (num <= 30) return '#ff7272'; // 빨강
+            if (num <= 40) return '#aaa';    // 회색
+            return '#b0d840';                // 초록
+        }
+
+        function generateLotto() {
+            const numbers = [];
+            while(numbers.length < 6) {
+                const num = Math.floor(Math.random() * 45) + 1;
+                if(!numbers.includes(num)) {
+                    numbers.push(num);
+                }
+            }
+            displayBalls(numbers);
+        }
+
+        function displayBalls(numbers) {
+            numbers.sort((a, b) => a - b);
+            currentNumbers = [...numbers];
+            const container = document.getElementById('lotto-balls');
+            container.innerHTML = ''; 
+
+            numbers.forEach((num, index) => {
+                const ball = document.createElement('div');
+                ball.className = 'ball';
+                ball.innerText = num;
+                ball.style.backgroundColor = getBallColor(num);
+                container.appendChild(ball);
+
+                setTimeout(() => {
+                    ball.classList.add('show');
+                }, index * 100);
+            });
+            addToHistory(numbers);
+        }
+
+        function addToHistory(numbers) {
+            const section = document.getElementById('history-section');
+            const listContainer = document.getElementById('history-list');
+            section.style.display = 'block';
+
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            
+            numbers.forEach(num => {
+                const hBall = document.createElement('div');
+                hBall.className = 'history-ball';
+                hBall.innerText = num;
+                hBall.style.backgroundColor = getBallColor(num);
+                historyItem.appendChild(hBall);
+            });
+
+            listContainer.prepend(historyItem);
+            if (listContainer.children.length > 5) listContainer.removeChild(listContainer.lastChild);
+        }
+
+        async function runAnalysis() {
+            const btn = document.getElementById('analyzeBtn');
+            const loader = document.getElementById('loader');
+            const resultDiv = document.getElementById('analysis-result');
+            const progressSpan = document.getElementById('progress');
+            
+            btn.style.display = 'none';
+            loader.style.display = 'block';
+            resultDiv.style.display = 'none';
+
+            // 회차 계산
             const start = new Date('2002-12-07');
             const now = new Date();
-            const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24 * 7)) + 1;
+            const latestNo = Math.floor((now - start) / (1000 * 60 * 60 * 24 * 7)) + 1;
             
             const results = [];
-            document.getElementById('status').classList.remove('hidden');
-            
-            for(let i = 0; i < count; i++) {
-                const drwNo = diff - i;
-                if(drwNo < 1) break;
-
+            for(let i = 0; i < 30; i++) { // 속도를 위해 30주로 샘플링 (100주는 프록시 한계로 오래 걸림)
+                const drwNo = latestNo - i;
                 try {
-                    // CORS 우회를 위한 프록시 사용
                     const response = await fetch(`${API_PROXY}${encodeURIComponent(LOTTO_API + drwNo)}`);
                     const json = await response.json();
                     const data = JSON.parse(json.contents);
-                    
                     if(data.returnValue === "success") {
                         results.push([data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6]);
-                        document.getElementById('progress').innerText = results.length;
+                        progressSpan.innerText = results.length * 3; // 100주 비율로 표시
                     }
-                } catch (e) {
-                    console.error("API Error:", e);
-                    if(results.length > 0) break; // 일부라도 모았으면 중단하고 분석 진행
-                }
-                
-                if(results.length >= count) break;
-                // 속도 조절
-                if(i % 5 === 0) await new Promise(r => setTimeout(r, 100));
+                } catch (e) { break; }
+                if(results.length >= 10) break;
             }
 
-            document.getElementById('status').classList.add('hidden');
-            return results.length > 0 ? results : generateMockData();
-        }
+            if(results.length === 0) {
+                alert("데이터를 가져오지 못했습니다. 샘플 분석을 진행합니다.");
+                for(let i=0; i<30; i++) results.push(Array.from({length:6}, () => Math.floor(Math.random()*45)+1));
+            }
 
-        function generateMockData() {
-            alert("실시간 데이터 수집이 지연되어 샘플 데이터로 분석합니다.");
-            return Array.from({length: 100}, () => 
-                Array.from({length: 6}, () => Math.floor(Math.random() * 45) + 1)
-            );
-        }
-
-        function getBallColorClass(num) {
-            if (num <= 10) return 'bg-ball-1';
-            if (num <= 20) return 'bg-ball-2';
-            if (num <= 30) return 'bg-ball-3';
-            if (num <= 40) return 'bg-ball-4';
-            return 'bg-ball-5';
-        }
-
-        function createBall(num) {
-            return `<div class="lotto-ball ${getBallColorClass(num)}">${num}</div>`;
-        }
-
-        document.getElementById('analyzeBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('analyzeBtn');
-            btn.disabled = true;
-            btn.innerText = "분석 중...";
-            
-            const data = await fetchLottoData(100);
-            const flatData = data.flat();
+            const flat = results.flat();
             const counts = {};
-            flatData.forEach(n => counts[n] = (counts[n] || 0) + 1);
+            flat.forEach(n => counts[n] = (counts[n] || 0) + 1);
+            const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
             
-            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-            const hot = sorted.slice(0, 15).map(x => parseInt(x[0]));
-            const cold = sorted.slice(-15).map(x => parseInt(x[0]));
+            const hot = sorted.slice(0, 10).map(x => parseInt(x[0]));
+            const cold = sorted.slice(-10).map(x => parseInt(x[0]));
 
-            document.getElementById('hotNums').innerText = hot.slice(0, 6).join(", ");
-            document.getElementById('coldNums').innerText = cold.slice(0, 6).join(", ");
+            document.getElementById('hot-numbers').innerText = hot.slice(0,3).join(", ");
+            document.getElementById('cold-numbers').innerText = cold.slice(0,3).join(", ");
 
-            const strategy = {
-                "🔥 자주 나온 조합": () => _.sampleSize(hot, 6),
-                "❄️ 희귀 번호 조합": () => _.sampleSize(cold, 6),
-                "⚖️ 밸런스 조합": () => [..._.sampleSize(hot, 3), ..._.sampleSize(cold, 3)],
-                "🎲 가중치 랜덤": () => _.sampleSize(Array.from(new Set(flatData)), 6)
-            };
+            const recList = document.getElementById('recommendation-list');
+            recList.innerHTML = "";
+            
+            const strategies = [
+                { name: "🔥 다빈도 추천", nums: sample(hot, 6) },
+                { name: "⚖️ 균형 추천 (Hot+Cold)", nums: [...sample(hot, 3), ...sample(cold, 3)] }
+            ];
 
-            const recArea = document.getElementById('recommendations');
-            recArea.innerHTML = "";
-
-            Object.entries(strategy).forEach(([name, func]) => {
-                const nums = func().sort((a, b) => a - b);
-                const item = document.createElement('div');
-                item.innerHTML = `
-                    <p class="text-xs font-bold text-gray-500 mb-2">${name}</p>
-                    <div class="flex flex-wrap">${nums.map(createBall).join('')}</div>
+            strategies.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'rec-item';
+                const nums = s.nums.sort((a,b) => a-b);
+                div.innerHTML = `
+                    <span class="rec-label">${s.name}</span>
+                    <div style="display: flex; gap: 5px; cursor: pointer;" onclick="useRecommended([${nums}])">
+                        ${nums.map(n => `<div class="rec-ball" style="background:${getBallColor(n)}">${n}</div>`).join('')}
+                    </div>
                 `;
-                recArea.appendChild(item);
+                recList.appendChild(div);
             });
 
-            document.getElementById('resultArea').classList.remove('hidden');
-            btn.disabled = false;
-            btn.innerText = "다시 분석하기";
-        });
+            loader.style.display = 'none';
+            resultDiv.style.display = 'block';
+            btn.style.display = 'block';
+            btn.innerText = "데이터 다시 분석하기";
+        }
 
-        // Simple Lodash-like sampleSize
-        const _ = {
-            sampleSize: (arr, n) => {
-                let shuffled = [...arr].sort(() => 0.5 - Math.random());
-                return shuffled.slice(0, n);
-            }
-        };
+        function useRecommended(nums) {
+            displayBalls(nums);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function sample(arr, n) {
+            return [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
+        }
+
+        function copyToClipboard() {
+            if (currentNumbers.length === 0) return alert('먼저 번호를 생성해주세요!');
+            const text = currentNumbers.join(', ');
+            navigator.clipboard.writeText(text).then(() => alert('번호가 복사되었습니다!'));
+        }
     </script>
 </body>
 </html>
