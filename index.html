@@ -8,34 +8,38 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       background: #f5f7fb;
       color: #111;
     }
 
     header {
       background: linear-gradient(135deg, #6a11cb, #2575fc);
-      padding: 60px 20px;
+      padding: 40px 20px 60px;
       text-align: center;
       color: white;
+      position: relative;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 40px;
+    .lang-selector {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 10px;
+      outline: none;
+      cursor: pointer;
+      font-size: 14px;
     }
+    .lang-selector option { color: black; }
 
-    header p {
-      margin-top: 12px;
-      font-size: 16px;
-      opacity: 0.9;
-    }
+    header h1 { margin: 0; font-size: 32px; }
+    header p { margin-top: 12px; font-size: 14px; opacity: 0.9; }
 
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
+    .container { max-width: 600px; margin: -30px auto 40px; padding: 0 20px; }
 
     .card {
       background: white;
@@ -45,11 +49,7 @@
       margin-bottom: 30px;
     }
 
-    .question {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
+    .question { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
 
     .btn {
       width: 100%;
@@ -62,11 +62,10 @@
       cursor: pointer;
       margin-bottom: 12px;
       transition: 0.2s;
+      text-align: left;
     }
 
-    .btn:hover {
-      background: #6a11cb;
-    }
+    .btn:hover { background: #6a11cb; }
 
     .start-btn {
       padding: 16px 22px;
@@ -79,26 +78,12 @@
       border: none;
     }
 
-    .start-btn:hover {
-      background: #333;
-    }
+    .start-btn:hover { background: #333; }
 
-    .progress {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #555;
-    }
+    .progress { margin-top: 20px; font-size: 14px; color: #555; }
 
-    .result-title {
-      font-size: 28px;
-      margin: 0;
-    }
-
-    .aura-name {
-      font-size: 22px;
-      margin-top: 10px;
-      font-weight: bold;
-    }
+    .result-title { font-size: 24px; margin: 0; }
+    .aura-name { font-size: 20px; margin-top: 10px; font-weight: bold; }
 
     .result-box {
       margin-top: 20px;
@@ -108,18 +93,9 @@
       border: 1px solid #d6e6ff;
     }
 
-    .result-box p {
-      margin: 10px 0;
-      font-size: 15px;
-      line-height: 1.5;
-    }
+    .result-box p { margin: 10px 0; font-size: 14px; line-height: 1.5; }
 
-    .share-area {
-      margin-top: 25px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .share-area { margin-top: 25px; display: flex; flex-direction: column; gap: 12px; }
 
     .small-btn {
       padding: 12px;
@@ -130,43 +106,12 @@
       font-size: 14px;
     }
 
-    .download-btn {
-      background: #00c853;
-      color: white;
-    }
+    .download-btn { background: #00c853; color: white; }
+    .copy-btn { background: #ff9100; color: white; }
+    .restart-btn { background: #111; color: white; }
 
-    .download-btn:hover {
-      background: #00a946;
-    }
-
-    .copy-btn {
-      background: #ff9100;
-      color: white;
-    }
-
-    .copy-btn:hover {
-      background: #e87f00;
-    }
-
-    .restart-btn {
-      background: #111;
-      color: white;
-    }
-
-    .restart-btn:hover {
-      background: #333;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px;
-      font-size: 12px;
-      color: #777;
-    }
-
-    canvas {
-      display: none;
-    }
+    footer { text-align: center; padding: 30px; font-size: 11px; color: #777; }
+    canvas { display: none; }
 
     .caption-box {
       background: #fff8e6;
@@ -174,7 +119,7 @@
       padding: 15px;
       border-radius: 14px;
       margin-top: 15px;
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.5;
       color: #333;
       white-space: pre-line;
@@ -185,20 +130,28 @@
 <body>
 
   <header>
-    <h1>✨ My Aura Color Test</h1>
-    <p>Find your vibe. Download your TikTok result card.</p>
+    <select class="lang-selector" onchange="changeLanguage(this.value)">
+      <option value="en">English (US)</option>
+      <option value="ko">한국어 (KR)</option>
+      <option value="ja">日本語 (JP)</option>
+      <option value="zh">简体中文 (CN)</option>
+      <option value="pt">Português (BR)</option>
+      <option value="hi">हिन्दी (IN)</option>
+      <option value="de">Deutsch (DE)</option>
+    </select>
+    <h1 id="ui-title">✨ My Aura Color Test</h1>
+    <p id="ui-subtitle">Find your vibe. Download your TikTok result card.</p>
   </header>
 
   <div class="container">
-
     <!-- START -->
     <div class="card" id="startCard">
-      <h2 style="margin-top:0;">🔥 Ready to discover your Aura?</h2>
-      <p>
+      <h2 style="margin-top:0;" id="ui-ready">🔥 Ready to discover your Aura?</h2>
+      <p id="ui-instruction">
         Answer 7 quick questions and get your aura color result.<br>
         Then download your result card for TikTok.
       </p>
-      <button class="start-btn" onclick="startTest()">Start Test</button>
+      <button class="start-btn" onclick="startTest()" id="ui-start">Start Test</button>
     </div>
 
     <!-- TEST -->
@@ -210,142 +163,233 @@
 
     <!-- RESULT -->
     <div class="card" id="resultCard" style="display:none;">
-      <h2 class="result-title">🎉 Your Aura Result</h2>
+      <h2 class="result-title" id="ui-result-title">🎉 Your Aura Result</h2>
       <div class="aura-name" id="auraName"></div>
 
       <div class="result-box">
-        <p><b>Core Vibe:</b> <span id="coreVibe"></span></p>
-        <p><b>Strength:</b> <span id="strength"></span></p>
-        <p><b>Weakness:</b> <span id="weakness"></span></p>
-        <p><b>Love Style:</b> <span id="loveStyle"></span></p>
-        <p><b>Today's Advice:</b> <span id="advice"></span></p>
+        <p><b id="ui-label-core">Core Vibe:</b> <span id="coreVibe"></span></p>
+        <p><b id="ui-label-strength">Strength:</b> <span id="strength"></span></p>
+        <p><b id="ui-label-weakness">Weakness:</b> <span id="weakness"></span></p>
+        <p><b id="ui-label-love">Love Style:</b> <span id="loveStyle"></span></p>
+        <p><b id="ui-label-advice">Today's Advice:</b> <span id="advice"></span></p>
       </div>
 
       <div class="caption-box" id="captionBox"></div>
 
       <div class="share-area">
-        <button class="small-btn download-btn" onclick="downloadCard()">⬇ Download TikTok Result Card</button>
-        <button class="small-btn copy-btn" onclick="copyCaption()">📋 Copy Caption + Hashtags</button>
-        <button class="small-btn restart-btn" onclick="restartTest()">🔁 Try Again</button>
+        <button class="small-btn download-btn" onclick="downloadCard()" id="ui-download">⬇ Download TikTok Result Card</button>
+        <button class="small-btn copy-btn" onclick="copyCaption()" id="ui-copy">📋 Copy Caption + Hashtags</button>
+        <button class="small-btn restart-btn" onclick="restartTest()" id="ui-restart">🔁 Try Again</button>
       </div>
 
       <canvas id="resultCanvas" width="1080" height="1920"></canvas>
     </div>
-
   </div>
 
-  <footer>
+  <footer id="ui-footer">
     ⚠️ This is a fun personality test. Results are for entertainment only.<br>
     © 2026 Aura Test Project
   </footer>
 
   <script>
-    // QUESTIONS
-    const questions = [
-      {
-        q: "When you're stressed, what do you do first?",
-        a: [
-          { text: "I disappear and recharge alone", type: "purple" },
-          { text: "I talk to someone immediately", type: "pink" },
-          { text: "I focus on work or goals", type: "blue" },
-          { text: "I distract myself with fun stuff", type: "yellow" }
-        ]
+    const translations = {
+      en: {
+        title: "✨ My Aura Color Test", subtitle: "Find your vibe. Download your TikTok result card.",
+        ready: "🔥 Ready to discover your Aura?", instruction: "Answer 7 quick questions and get your aura color result.\nThen download your result card for TikTok.",
+        start: "Start Test", resultTitle: "🎉 Your Aura Result", labelCore: "Core Vibe:", labelStrength: "Strength:",
+        labelWeakness: "Weakness:", labelLove: "Love Style:", labelAdvice: "Today's Advice:",
+        download: "⬇ Download TikTok Result Card", copy: "📋 Copy Caption + Hashtags", restart: "🔁 Try Again",
+        footer: "⚠️ This is a fun personality test. Results are for entertainment only.\n© 2026 Aura Test Project",
+        questions: [
+          { q: "When you're stressed, what do you do first?", a: ["I disappear and recharge alone", "I talk to someone immediately", "I focus on work or goals", "I distract myself with fun stuff"] },
+          { q: "Your friends describe you as...", a: ["Mysterious and deep", "Warm and caring", "Calm and reliable", "Funny and chaotic"] },
+          { q: "What is your biggest hidden power?", a: ["Reading people easily", "Making people feel loved", "Staying strong in hard times", "Making everyone laugh"] },
+          { q: "Your ideal weekend is...", a: ["Late-night thoughts & music", "Hanging out with loved ones", "Planning my future / gym / routine", "Doing random fun adventures"] },
+          { q: "What kind of love do you want?", a: ["A soulmate who understands my silence", "A romantic relationship full of affection", "A stable love with trust and loyalty", "A fun love that feels like a movie"] },
+          { q: "If someone hurts you, you...", a: ["Cut them off quietly", "Cry but forgive easily", "Act fine, but never forget", "Laugh it off but feel it later"] },
+          { q: "Your biggest weakness is...", a: ["Overthinking too much", "Caring too much about others", "Being emotionally distant", "Being too impulsive"] }
+        ],
+        results: {
+          purple: { name: "💜 Purple (Mystic)", core: "You have main-character mystery vibes. People feel your depth.", strength: "Highly intuitive, emotionally intelligent, creative mind.", weakness: "Overthinking, emotional exhaustion, trusting too late.", love: "You want a soulmate connection, not casual love.", advice: "Stop analyzing everything. Your feelings are already the answer." },
+          pink: { name: "💗 Pink (Soft Heart)", core: "You are warm, lovable, and people feel safe around you.", strength: "Empathy, kindness, emotional healing power.", weakness: "You give too much and forget yourself.", love: "You love deeply and want constant affection.", advice: "Don't chase love. Choose someone who chooses you back." },
+          blue: { name: "💙 Blue (Calm Power)", core: "You're stable, mature, and secretly unstoppable.", strength: "Discipline, loyalty, strong mindset under pressure.", weakness: "You hide emotions too well and feel lonely sometimes.", love: "You want loyalty, trust, and long-term love.", advice: "You don't have to be strong all the time. Let someone in." },
+          yellow: { name: "💛 Yellow (Chaos Fun)", core: "You bring laughter and energy everywhere you go.", strength: "Charisma, creativity, fearless personality.", weakness: "Impulsive choices, mood swings, getting bored easily.", love: "You want exciting love that feels like a story.", advice: "Your vibe is rare. Don't waste it on people who don't match your energy." }
+        }
       },
-      {
-        q: "Your friends describe you as...",
-        a: [
-          { text: "Mysterious and deep", type: "purple" },
-          { text: "Warm and caring", type: "pink" },
-          { text: "Calm and reliable", type: "blue" },
-          { text: "Funny and chaotic", type: "yellow" }
-        ]
+      ko: {
+        title: "✨ 나의 아우라 컬러 테스트", subtitle: "당신의 분위기를 찾고 TikTok용 결과 카드를 받으세요.",
+        ready: "🔥 아우라를 찾을 준비가 되셨나요?", instruction: "7개의 질문에 답하고 나만의 아우라 컬러를 확인하세요.\n결과를 저장해 TikTok에 공유할 수 있습니다.",
+        start: "테스트 시작", resultTitle: "🎉 테스트 결과", labelCore: "핵심 분위기:", labelStrength: "강점:",
+        labelWeakness: "약점:", labelLove: "연애 스타일:", labelAdvice: "오늘의 조언:",
+        download: "⬇ TikTok 결과 카드 다운로드", copy: "📋 캡션 + 해시태그 복사", restart: "🔁 다시 하기",
+        footer: "⚠️ 재미로 보는 심리 테스트입니다. 결과는 즐거움으로만 받아주세요.\n© 2026 Aura Test Project",
+        questions: [
+          { q: "스트레스를 받으면 가장 먼저 무엇을 하나요?", a: ["혼자 사라져서 재충전한다", "즉시 누군가와 이야기한다", "일이나 목표에 집중한다", "재미있는 일로 관심을 돌린다"] },
+          { q: "친구들이 당신을 묘사할 때...", a: ["신비롭고 깊이 있는 사람", "따뜻하고 배려심 많은 사람", "침착하고 믿음직한 사람", "웃기고 종잡을 수 없는 사람"] },
+          { q: "당신의 가장 큰 숨겨진 능력은?", a: ["사람의 마음을 쉽게 읽음", "사람들에게 사랑받는 기분을 줌", "어려운 상황에서도 버티는 힘", "모두를 웃게 만드는 능력"] },
+          { q: "가장 이상적인 주말은?", a: ["밤늦게까지 사색하며 음악 듣기", "사랑하는 사람들과 시간 보내기", "미래 계획 / 운동 / 루틴 지키기", "랜덤하고 즉흥적인 모험하기"] },
+          { q: "당신이 원하는 사랑은?", a: ["나의 침묵까지 이해하는 소울메이트", "애정 가득하고 로맨틱한 관계", "신뢰와 충성이 바탕이 된 안정적인 사랑", "영화처럼 신나고 역동적인 사랑"] },
+          { q: "누군가 당신에게 상처를 주면...", a: ["조용히 관계를 끊는다", "울지만 쉽게 용서한다", "괜찮은 척하지만 절대 잊지 않는다", "웃어넘기지만 속으로 다 느낀다"] },
+          { q: "당신의 가장 큰 약점은?", a: ["생각이 너무 많음", "타인을 너무 과하게 챙김", "가끔 감정적으로 차가워 보임", "충동적인 결정"] }
+        ],
+        results: {
+          purple: { name: "💜 보라색 아우라 (신비 에너지)", core: "주인공 같은 신비로운 분위기. 깊이가 느껴집니다.", strength: "높은 직관력, 공감 능력, 창의적인 사고.", weakness: "생각이 너무 많음, 감정적 소모, 늦은 신뢰.", love: "가벼운 만남보다 깊은 소울메이트를 원함.", advice: "모든 것을 분석하려 하지 마세요. 이미 당신의 직감이 답입니다." },
+          pink: { name: "💗 분홍색 아우라 (따뜻한 마음 에너지)", core: "따뜻하고 사랑스러운 사람. 곁에 있으면 안전함을 느낍니다.", strength: "공감, 친절, 타인의 마음을 치유하는 힘.", weakness: "남을 너무 퍼주다가 자신을 잊곤 함.", love: "깊게 사랑하고 꾸준한 애정 표현을 원함.", advice: "사랑을 쫓지 마세요. 당신을 소중히 여기는 사람을 선택하세요." },
+          blue: { name: "💙 파란색 아우라 (차분한 힘 에너지)", core: "안정적이고 성숙하며, 내면이 아주 단단한 사람.", strength: "절제력, 충성심, 압박 속에서도 흔들리지 않는 멘탈.", weakness: "감정을 너무 숨겨서 가끔 외로움을 느낌.", love: "변치 않는 의리, 신뢰, 장기적인 연애.", advice: "항상 강할 필요는 없습니다. 누군가에게 기대보세요." },
+          yellow: { name: "💛 노란색 아우라 (즐거운 혼돈 에너지)", core: "어디를 가든 웃음과 에너지를 가져오는 사람.", strength: "카리스마, 창의성, 두려움 없는 성격.", weakness: "충동적인 선택, 감정 기복, 쉽게 실증을 느낌.", love: "지루하지 않고 영화 같은 설레는 사랑.", advice: "당신의 에너지는 특별합니다. 그 가치를 몰라주는 사람에게 낭비하지 마세요." }
+        }
       },
-      {
-        q: "What is your biggest hidden power?",
-        a: [
-          { text: "Reading people easily", type: "purple" },
-          { text: "Making people feel loved", type: "pink" },
-          { text: "Staying strong in hard times", type: "blue" },
-          { text: "Making everyone laugh", type: "yellow" }
-        ]
+      ja: {
+        title: "✨ オーラカラー診断", subtitle: "あなたの雰囲気を見つけて、TikTok用のカードをゲットしよう。",
+        ready: "🔥 あなたのオーラを見つける準備はできた？", instruction: "7つの質問に答えて、あなたのオーラカラーを診断します。\nカードを保存してTikTokでシェアしよう。",
+        start: "診断スタート", resultTitle: "🎉 診断結果", labelCore: "コアな雰囲気:", labelStrength: "強み:",
+        labelWeakness: "弱点:", labelLove: "恋愛スタイル:", labelAdvice: "今日のアドバイス:",
+        download: "⬇ TikTok結果カードを保存", copy: "📋 キャプションをコピー", restart: "🔁 もう一度やる",
+        footer: "⚠️ これはエンターテインメント用の心理テストです。\n© 2026 Aura Test Project",
+        questions: [
+          { q: "ストレスを感じたとき、まず何をする？", a: ["一人になって充電する", "すぐに誰かと話す", "仕事や目標に集中する", "楽しいことで気を紛らわせる"] },
+          { q: "友達からどう言われることが多い？", a: ["ミステリアスで深い", "温かくて思いやりがある", "冷静で頼もしい", "面白くてカオス"] },
+          { q: "あなたの隠れた才能は？", a: ["人の心を読み取るのが上手い", "周りを癒やす力", "逆境に負けない精神力", "みんなを笑わせる才能"] },
+          { q: "理想の週末は？", a: ["夜更かしして音楽に浸る", "大切な人と過ごす", "ルーティンや運動をこなす", "即興で冒険に出かける"] },
+          { q: "どんな愛を求めている？", a: ["沈黙すら共有できるソウルメイト", "ロマンチックで愛情深い関係", "信頼に基づいた安定した愛", "映画のような刺激的な愛"] },
+          { q: "傷つけられたとき、どうする？", a: ["静かに縁を切る", "泣くけどすぐ許す", "平気な顔をして一生忘れない", "笑って流すが内心は傷ついている"] },
+          { q: "最大の弱点は？", a: ["考えすぎること", "他人に尽くしすぎること", "感情的に冷たく見えること", "衝動的な行動"] }
+        ],
+        results: {
+          purple: { name: "💜 パープルオーラ (神秘)", core: "主人公のような神秘的な魅力。深みを感じさせます。", strength: "直感力、高いEQ、クリエイティブ。", weakness: "深読み、感情の消耗、不信感。", love: "魂で繋がるような深い関係を求めます。", advice: "考えすぎないで。あなたの直感がすでに答えを知っています。" },
+          pink: { name: "💗 ピンクオーラ (温情)", core: "温かく愛嬌があり、周りに安心感を与えます。", strength: "共感力、優しさ、癒やしの力。", weakness: "自分を後回しにしてしまう。", love: "一途で愛情表現を大切にします。", advice: "愛を追いかけないで。あなたを大切にする人を選んで。" },
+          blue: { name: "💙 ブルーオーラ (冷静な力)", core: "落ち着いていて成熟しており、芯が強い人。", strength: "自制心、誠実さ、メンタルの強さ。", weakness: "感情を隠しすぎて孤独を感じる。", love: "信頼と安定、長期的な絆。", advice: "常に強くいる必要はありません。たまには甘えてみて。" },
+          yellow: { name: "💛 イエローオーラ (活気ある混沌)", core: "どこにいても笑いと活気をもたらす太陽のような人。", strength: "カリスマ性、独創性、恐れ知らず。", weakness: "衝動的、気分の浮き沈み、飽き性。", love: "映画のようなドラマチックな恋。", advice: "あなたの魅力は特別です。それを理解しない人に時間を使わないで。" }
+        }
       },
-      {
-        q: "Your ideal weekend is...",
-        a: [
-          { text: "Late-night thoughts & music", type: "purple" },
-          { text: "Hanging out with loved ones", type: "pink" },
-          { text: "Planning my future / gym / routine", type: "blue" },
-          { text: "Doing random fun adventures", type: "yellow" }
-        ]
+      zh: {
+        title: "✨ 我的灵气颜色测试", subtitle: "找到你的氛围，下载你的 TikTok 结果卡。",
+        ready: "🔥 准备好发现你的灵气了吗？", instruction: "回答 7 个简单问题，获取你的灵气颜色结果。\n然后下载你的 TikTok 结果卡。",
+        start: "开始测试", resultTitle: "🎉 你的灵气结果", labelCore: "核心氛围:", labelStrength: "优势:",
+        labelWeakness: "弱点:", labelLove: "恋爱风格:", labelAdvice: "今日建议:",
+        download: "⬇ 下载 TikTok 结果卡", copy: "📋 复制文案 + 标签", restart: "🔁 再试一次",
+        footer: "⚠️ 这只是一个有趣的心理测试，结果仅供参考。\n© 2026 Aura Test Project",
+        questions: [
+          { q: "当你感到压力时，你首先会做什么？", a: ["消失并独自充电", "立即找人倾诉", "专注于工作或目标", "找点好玩的事情分心"] },
+          { q: "你的朋友形容你是...", a: ["神秘且深沉", "温暖且体贴", "冷静且可靠", "有趣且随性"] },
+          { q: "你最大的隐藏力量是什么？", a: ["轻易洞察人心", "让人们感到被爱", "在困难时期保持坚强", "让每个人都笑出来"] },
+          { q: "你理想的周末是...", a: ["深夜思考并听音乐", "与爱人呆在一起", "计划未来/健身/规律生活", "进行随机有趣的冒险"] },
+          { q: "你想要什么样的爱情？", a: ["理解我沉默的灵魂伴侣", "充满爱意的浪漫关系", "充满信任与忠诚的稳定爱情", "像电影一样有趣的爱情"] },
+          { q: "如果有人伤害了你，你会...", a: ["悄悄断绝往来", "哭一场但很容易原谅", "表现得没事但永远不会忘记", "一笑而过但内心深有感触"] },
+          { q: "你最大的弱点是...", a: ["过度思考", "太在意别人", "情感疏离", "太冲动"] }
+        ],
+        results: {
+          purple: { name: "💜 紫色灵气 (神秘能量)", core: "你有一种主角般的神秘氛围，人们能感受到你的深度。", strength: "高度直觉，高情商，创造性思维。", weakness: "想太多，情绪耗竭，很难信任他人。", love: "你想要灵魂深处的连接，而非廉价的爱。", advice: "停止分析一切。你的感觉就是答案。" },
+          pink: { name: "💗 粉色灵气 (温柔能量)", core: "你温暖可爱，让身边的人感到安全。", strength: "同理心，善良，情感疗愈力。", weakness: "付出太多而忘记了自己。", love: "你深爱并渴望不断的爱意。", advice: "不要追逐爱情。选择那个也选择你的人。" },
+          blue: { name: "💙 蓝色灵气 (冷静能量)", core: "你稳定、成熟，内心无比强大。", strength: "自律，忠诚，高压下的坚强心态。", weakness: "太擅长隐藏情感，有时会感到孤独。", love: "你想要忠诚、信任和长期的爱。", advice: "你不必时刻保持坚强。让别人走进你的内心。" },
+          yellow: { name: "💛 黄色灵气 (活力能量)", core: "无论走到哪里，你都能带来笑声和活力。", strength: "个人魅力，创造力，无畏的性格。", weakness: "冲动的选择，情绪波动，容易厌倦。", love: "你想要像故事一样精彩刺激的爱情。", advice: "你的氛围很稀有，不要把它浪费在不值得的人身上。" }
+        }
       },
-      {
-        q: "What kind of love do you want?",
-        a: [
-          { text: "A soulmate who understands my silence", type: "purple" },
-          { text: "A romantic relationship full of affection", type: "pink" },
-          { text: "A stable love with trust and loyalty", type: "blue" },
-          { text: "A fun love that feels like a movie", type: "yellow" }
-        ]
+      pt: {
+        title: "✨ Teste da Cor da Sua Aura", subtitle: "Encontre sua vibe. Baixe seu card para o TikTok.",
+        ready: "🔥 Pronto para descobrir sua Aura?", instruction: "Responda 7 perguntas rápidas e veja o resultado.\nDepois, baixe seu card de resultado para o TikTok.",
+        start: "Começar Teste", resultTitle: "🎉 Seu Resultado", labelCore: "Vibe Principal:", labelStrength: "Força:",
+        labelWeakness: "Fraqueza:", labelLove: "Estilo de Amor:", labelAdvice: "Conselho de Hoje:",
+        download: "⬇ Baixar Card para TikTok", copy: "📋 Copiar Legenda", restart: "🔁 Tentar Novamente",
+        footer: "⚠️ Este é um teste de personalidade divertido apenas para entretenimento.\n© 2026 Aura Test Project",
+        questions: [
+          { q: "Quando você está estressado, o que faz primeiro?", a: ["Eu desapareço e recarrego sozinho", "Eu falo com alguém imediatamente", "Eu foco no trabalho ou metas", "Eu me distraio com coisas divertidas"] },
+          { q: "Seus amigos te descrevem como...", a: ["Misterioso e profundo", "Calmo e carinhoso", "Fiel e confiável", "Engraçado e caótico"] },
+          { q: "Qual é o seu maior poder oculto?", a: ["Ler as pessoas facilmente", "Fazer as pessoas se sentirem amadas", "Ficar forte em tempos difíceis", "Fazer todo mundo rir"] },
+          { q: "Seu fim de semana ideal é...", a: ["Pensamentos noturnos e música", "Passar tempo com quem amo", "Planejar meu futuro / academia", "Fazer aventuras aleatórias"] },
+          { q: "Que tipo de amor você quer?", a: ["Uma alma gêmea que entende meu silêncio", "Um romance cheio de carinho", "Um amor estável com confiança", "Um amor divertido que parece filme"] },
+          { q: "Se alguém te magoa, você...", a: ["Corta a pessoa silenciosamente", "Chora mas perdoa fácil", "Age normalmente mas nunca esquece", "Leva na rir mas sente lá no fundo"] },
+          { q: "Sua maior fraqueza é...", a: ["Pensar demais nas coisas", "Cuidar demais dos outros", "Ser emocionalmente distante", "Ser impulsivo demais"] }
+        ],
+        results: {
+          purple: { name: "💜 Aura Roxa (Mística)", core: "Você tem a vibe misteriosa de protagonista. As pessoas sentem sua profundidade.", strength: "Intuitivo, inteligência emocional, mente criativa.", weakness: "Pensar demais, exaustão emocional, demora a confiar.", love: "Você quer uma conexão de alma, não algo casual.", advice: "Pare de analisar tudo. Seus sentimentos já são a resposta." },
+          pink: { name: "💗 Aura Rosa (Coração Suave)", core: "Você é doce, amável e as pessoas se sentem seguras com você.", strength: "Empatia, bondade, poder de cura emocional.", weakness: "Dá demais e esquece de si mesmo.", love: "Ama profundamente e quer afeto constante.", advice: "Não persiga o amor. Escolha quem escolhe você de volta." },
+          blue: { name: "💙 Aura Azul (Poder Calmo)", core: "Você é estável, maduro e secretamente imparável.", strength: "Disciplina, lealdade, mente forte sob pressão.", weakness: "Esconde bem as emoções e se sente só às vezes.", love: "Quer lealdade, confiança e amor duradouro.", advice: "Você não precisa ser forte o tempo todo. Deixe alguém entrar." },
+          yellow: { name: "💛 Aura Amarela (Caos Divertido)", core: "Você traz risadas e energia por onde passa.", strength: "Carisma, criatividade, personalidade destemida.", weakness: "Impulsividade, oscilações de humor, tédio fácil.", love: "Quer um amor emocionante que pareça uma história.", advice: "Sua vibe é rara. Não a desperdice com quem não combina com você." }
+        }
       },
-      {
-        q: "If someone hurts you, you...",
-        a: [
-          { text: "Cut them off quietly", type: "purple" },
-          { text: "Cry but forgive easily", type: "pink" },
-          { text: "Act fine, but never forget", type: "blue" },
-          { text: "Laugh it off but feel it later", type: "yellow" }
-        ]
+      hi: {
+        title: "✨ माय ऑरा कलर टेस्ट", subtitle: "अपनी वाइब खोजें। अपना टिकटॉक परिणाम कार्ड डाउनलोड करें।",
+        ready: "🔥 अपना ऑरा खोजने के लिए तैयार हैं?", instruction: "7 त्वरित प्रश्नों के उत्तर दें और अपना ऑरा रंग परिणाम प्राप्त करें।\nफिर टिकटॉक के लिए अपना परिणाम कार्ड डाउनलोड करें।",
+        start: "टेस्ट शुरू करें", resultTitle: "🎉 आपका ऑरा परिणाम", labelCore: "मुख्य वाइब:", labelStrength: "ताकत:",
+        labelWeakness: "कमजोरी:", labelLove: "प्रेम शैली:", labelAdvice: "आज की सलाह:",
+        download: "⬇ टिकटॉक परिणाम कार्ड डाउनलोड करें", copy: "📋 कैप्शन कॉपी करें", restart: "🔁 फिर से प्रयास करें",
+        footer: "⚠️ यह केवल मनोरंजन के लिए एक व्यक्तित्व परीक्षण है।\n© 2026 Aura Test Project",
+        questions: [
+          { q: "जब आप तनाव में होते हैं, तो सबसे पहले क्या करते हैं?", a: ["मैं गायब हो जाता हूँ और अकेला रिचार्ज होता हूँ", "मैं तुरंत किसी से बात करता हूँ", "मैं काम या लक्ष्यों पर ध्यान केंद्रित करता हूँ", "मैं मजेदार चीजों से अपना ध्यान हटाता हूँ"] },
+          { q: "आपके दोस्त आपको कैसे बताते हैं?", a: ["रहस्यमय और गहरा", "गर्मजोशी और देखभाल करने वाला", "शांत और विश्वसनीय", "मजेदार और बेतरतीब"] },
+          { q: "आपकी सबसे बड़ी छिपी हुई शक्ति क्या है?", a: ["लोगों को आसानी से पढ़ना", "लोगों को प्यार महसूस कराना", "कठिन समय में मजबूत रहना", "सबको हँसाना"] },
+          { q: "आपका आदर्श सप्ताहांत क्या है?", a: ["देर रात के विचार और संगीत", "अपनों के साथ समय बिताना", "भविष्य की योजना / जिम", "यादृच्छिक मजेदार साहसिक कार्य"] },
+          { q: "आपको किस तरह का प्यार चाहिए?", a: ["एक सोलमेट जो मेरी चुप्पी को समझे", "स्नेह से भरा रोमांटिक रिश्ता", "भरोसे वाला स्थिर प्यार", "फिल्म जैसा मजेदार प्यार"] },
+          { q: "अगर कोई आपको चोट पहुँचाता है, तो आप...", a: ["चुपचाप उनसे नाता तोड़ लेते हैं", "रोते हैं लेकिन आसानी से माफ कर देते हैं", "ठीक होने का नाटक करते हैं, लेकिन कभी नहीं भूलते", "हँसकर टाल देते हैं लेकिन बुरा लगता है"] },
+          { q: "आपकी सबसे बड़ी कमजोरी क्या है?", a: ["बहुत ज्यादा सोचना", "दूसरों की बहुत ज्यादा परवाह करना", "भावनात्मक रूप से दूर रहना", "बहुत अधिक आवेगी होना"] }
+        ],
+        results: {
+          purple: { name: "💜 बैंगनी ऑरा (रहस्यमय)", core: "आपकी वाइब मुख्य चरित्र जैसी रहस्यमय है। लोग आपकी गहराई महसूस करते हैं।", strength: "सहज ज्ञान युक्त, भावनात्मक रूप से बुद्धिमान, रचनात्मक।", weakness: "ज्यादा सोचना, भावनात्मक थकावट, देर से भरोसा करना।", love: "आप आत्मा का संबंध चाहते हैं, आकस्मिक प्यार नहीं।", advice: "हर चीज का विश्लेषण करना बंद करें। आपकी भावनाएं ही जवाब हैं।" },
+          pink: { name: "💗 गुलाबी ऑरा (कोमल हृदय)", core: "आप गर्मजोशी से भरे और प्यारे हैं, लोग आपके पास सुरक्षित महसूस करते हैं।", strength: "सहानुभूति, दयालुता, भावनात्मक उपचार।", weakness: "आप बहुत ज्यादा देते हैं और खुद को भूल जाते हैं।", love: "आप गहराई से प्यार करते हैं और निरंतर स्नेह चाहते हैं।", advice: "प्यार का पीछा न करें। उसे चुनें जो आपको चुनता है।" },
+          blue: { name: "💙 नीला ऑरा (शांत शक्ति)", core: "आप स्थिर, परिपक्व और गुप्त रूप से अजेय हैं।", strength: "अनुशासन, वफादारी, दबाव में मजबूत मानसिकता।", weakness: "आप भावनाओं को बहुत अच्छी तरह छिपाते हैं और अकेला महसूस करते हैं।", love: "आप वफादारी, विश्वास और दीर्घकालिक प्यार चाहते हैं।", advice: "आपको हर समय मजबूत होने की जरूरत नहीं है। किसी को अंदर आने दें।" },
+          yellow: { name: "💛 पीला ऑरा (मजेदार ऊर्जा)", core: "आप जहाँ भी जाते हैं हँसी और ऊर्जा लाते हैं।", strength: "करिश्मा, रचनात्मकता, निडर व्यक्तित्व।", weakness: "आवेगी चुनाव, मूड स्विंग, जल्दी ऊब जाना।", love: "आप रोमांचक प्यार चाहते हैं जो एक कहानी जैसा लगे।", advice: "आपकी वाइब दुर्लभ है। इसे उन लोगों पर बर्बाद न करें जो आपकी ऊर्जा से मेल नहीं खाते।" }
+        }
       },
-      {
-        q: "Your biggest weakness is...",
-        a: [
-          { text: "Overthinking too much", type: "purple" },
-          { text: "Caring too much about others", type: "pink" },
-          { text: "Being emotionally distant", type: "blue" },
-          { text: "Being too impulsive", type: "yellow" }
-        ]
-      }
-    ];
-
-    // RESULTS
-    const results = {
-      purple: {
-        name: "💜 Purple Aura (Mystic Energy)",
-        core: "You have main-character mystery vibes. People feel your depth.",
-        strength: "Highly intuitive, emotionally intelligent, creative mind.",
-        weakness: "Overthinking, emotional exhaustion, trusting too late.",
-        love: "You want a soulmate connection, not casual love.",
-        advice: "Stop analyzing everything. Your feelings are already the answer."
-      },
-      pink: {
-        name: "💗 Pink Aura (Soft Heart Energy)",
-        core: "You are warm, lovable, and people feel safe around you.",
-        strength: "Empathy, kindness, emotional healing power.",
-        weakness: "You give too much and forget yourself.",
-        love: "You love deeply and want constant affection.",
-        advice: "Don't chase love. Choose someone who chooses you back."
-      },
-      blue: {
-        name: "💙 Blue Aura (Calm Power Energy)",
-        core: "You're stable, mature, and secretly unstoppable.",
-        strength: "Discipline, loyalty, strong mindset under pressure.",
-        weakness: "You hide emotions too well and feel lonely sometimes.",
-        love: "You want loyalty, trust, and long-term love.",
-        advice: "You don't have to be strong all the time. Let someone in."
-      },
-      yellow: {
-        name: "💛 Yellow Aura (Chaos Fun Energy)",
-        core: "You bring laughter and energy everywhere you go.",
-        strength: "Charisma, creativity, fearless personality.",
-        weakness: "Impulsive choices, mood swings, getting bored easily.",
-        love: "You want exciting love that feels like a story.",
-        advice: "Your vibe is rare. Don't waste it on people who don't match your energy."
+      de: {
+        title: "✨ Aura-Farbtest", subtitle: "Finde deinen Vibe. Lade deine TikTok-Ergebniskarte herunter.",
+        ready: "🔥 Bereit, deine Aura zu entdecken?", instruction: "Beantworte 7 kurze Fragen und erhalte dein Aura-Ergebnis.\nLade dann deine TikTok-Ergebniskarte herunter.",
+        start: "Test starten", resultTitle: "🎉 Dein Aura-Ergebnis", labelCore: "Kern-Vibe:", labelStrength: "Stärke:",
+        labelWeakness: "Schwäche:", labelLove: "Liebesstil:", labelAdvice: "Heutiger Rat:",
+        download: "⬇ TikTok-Karte herunterladen", copy: "📋 Caption kopieren", restart: "🔁 Nochmal versuchen",
+        footer: "⚠️ Dies ist ein unterhaltsamer Persönlichkeitstest nur zur Belustigung.\n© 2026 Aura Test Project",
+        questions: [
+          { q: "Was tust du zuerst, wenn du gestresst bist?", a: ["Ich verschwinde und tanke allein auf", "Ich spreche sofort mit jemandem", "Ich konzentriere mich auf Ziele", "Ich lenke mich mit Spaß ab"] },
+          { q: "Deine Freunde beschreiben dich als...", a: ["Geheimnisvoll und tiefgründig", "Warmherzig und fürsorglich", "Ruhig und zuverlässig", "Lustig und chaotisch"] },
+          { q: "Was ist deine größte verborgene Kraft?", a: ["Menschen leicht lesen können", "Menschen das Gefühl geben, geliebt zu sein", "In schweren Zeiten stark bleiben", "Jeden zum Lachen bringen"] },
+          { q: "Dein ideales Wochenende ist...", a: ["Nachdenken & Musik in der Nacht", "Zeit mit Liebsten verbringen", "Zukunft planen / Sport", "Zufällige Abenteuer erleben"] },
+          { q: "Welche Art von Liebe wünschst du dir?", a: ["Einen Seelenverwandten", "Eine romantische Beziehung", "Eine stabile Liebe mit Vertrauen", "Eine Liebe wie im Film"] },
+          { q: "Wenn dich jemand verletzt, dann...", a: ["Breche ich den Kontakt leise ab", "Weine ich, vergebe aber schnell", "Tue ich so als ob, vergesse aber nie", "Lache ich, fühle es aber innerlich"] },
+          { q: "Deine größte Schwäche ist...", a: ["Zu vieles zu überdenken", "Dich zu sehr um andere zu kümmern", "Emotional distanziert zu sein", "Zu impulsiv zu sein"] }
+        ],
+        results: {
+          purple: { name: "💜 Lila Aura (Mystisch)", core: "Du hast die mysteriöse Ausstrahlung eines Hauptcharakters.", strength: "Intuitiv, emotional intelligent, kreativ.", weakness: "Grübeln, emotionale Erschöpfung, spätes Vertrauen.", love: "Du willst eine tiefe Seelenverbindung.", advice: "Hör auf, alles zu analysieren. Deine Gefühle kennen die Antwort." },
+          pink: { name: "💗 Rosa Aura (Sanftes Herz)", core: "Du bist warmherzig und liebenswert. Menschen fühlen sich sicher bei dir.", strength: "Empathie, Güte, emotionale Heilung.", weakness: "Du gibst zu viel und vergisst dich selbst.", love: "Du liebst tief und brauchst Zuneigung.", advice: "Jage der Liebe nicht hinterher. Wähle jemanden, der auch dich wählt." },
+          blue: { name: "💙 Blaue Aura (Ruhige Kraft)", core: "Du bist stabil, reif und heimlich unaufhaltsam.", strength: "Disziplin, Loyalität, mentale Stärke.", weakness: "Du versteckst Gefühle zu gut und bist manchmal einsam.", love: "Du willst Loyalität, Vertrauen und Beständigkeit.", advice: "Du musst nicht immer stark sein. Lass jemanden an dich heran." },
+          yellow: { name: "💛 Gelbe Aura (Lustiges Chaos)", core: "Du bringst Lachen und Energie überallhin mit.", strength: "Charisma, Kreativität, furchtlos.", weakness: "Impulsivität, Stimmungsschwankungen, Langeweile.", love: "Du willst eine aufregende Liebe.", advice: "Dein Vibe ist selten. Verschwende ihn nicht an Leute, die nicht zu dir passen." }
+        }
       }
     };
 
+    let currentLang = 'en';
     let currentIndex = 0;
     let scores = { purple: 0, pink: 0, blue: 0, yellow: 0 };
     let finalType = "purple";
+
+    function updateUI() {
+      const t = translations[currentLang];
+      document.getElementById("ui-title").innerText = t.title;
+      document.getElementById("ui-subtitle").innerText = t.subtitle;
+      document.getElementById("ui-ready").innerText = t.ready;
+      document.getElementById("ui-instruction").innerText = t.instruction;
+      document.getElementById("ui-start").innerText = t.start;
+      document.getElementById("ui-result-title").innerText = t.resultTitle;
+      document.getElementById("ui-label-core").innerText = t.labelCore;
+      document.getElementById("ui-label-strength").innerText = t.labelStrength;
+      document.getElementById("ui-label-weakness").innerText = t.labelWeakness;
+      document.getElementById("ui-label-love").innerText = t.labelLove;
+      document.getElementById("ui-label-advice").innerText = t.labelAdvice;
+      document.getElementById("ui-download").innerText = t.download;
+      document.getElementById("ui-copy").innerText = t.copy;
+      document.getElementById("ui-restart").innerText = t.restart;
+      document.getElementById("ui-footer").innerText = t.footer;
+
+      if (document.getElementById("testCard").style.display === "block") {
+        showQuestion();
+      } else if (document.getElementById("resultCard").style.display === "block") {
+        showResult(true);
+      }
+    }
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      updateUI();
+    }
 
     function startTest() {
       document.getElementById("startCard").style.display = "none";
@@ -356,46 +400,45 @@
     }
 
     function showQuestion() {
-      const qObj = questions[currentIndex];
+      const t = translations[currentLang];
+      const qObj = t.questions[currentIndex];
+      const enQ = translations.en.questions[currentIndex]; // For scoring types
+      
       document.getElementById("questionText").innerText = qObj.q;
-
       const answersDiv = document.getElementById("answers");
       answersDiv.innerHTML = "";
 
-      qObj.a.forEach((ans) => {
+      const types = ["purple", "pink", "blue", "yellow"];
+      qObj.a.forEach((ansText, i) => {
         const btn = document.createElement("button");
         btn.className = "btn";
-        btn.innerText = ans.text;
-        btn.onclick = () => selectAnswer(ans.type);
+        btn.innerText = ansText;
+        btn.onclick = () => selectAnswer(types[i]);
         answersDiv.appendChild(btn);
       });
 
-      document.getElementById("progressText").innerText =
-        `Question ${currentIndex + 1} / ${questions.length}`;
+      document.getElementById("progressText").innerText = 
+        (currentLang === 'ko' ? `질문 ${currentIndex + 1} / 7` : `Question ${currentIndex + 1} / 7`);
     }
 
     function selectAnswer(type) {
       scores[type]++;
-
       currentIndex++;
-      if (currentIndex < questions.length) {
+      if (currentIndex < 7) {
         showQuestion();
       } else {
         showResult();
       }
     }
 
-    function showResult() {
-      document.getElementById("testCard").style.display = "none";
-      document.getElementById("resultCard").style.display = "block";
+    function showResult(isUpdate = false) {
+      if (!isUpdate) {
+        document.getElementById("testCard").style.display = "none";
+        document.getElementById("resultCard").style.display = "block";
+        finalType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+      }
 
-      // find max
-      finalType = Object.keys(scores).reduce((a, b) =>
-        scores[a] > scores[b] ? a : b
-      );
-
-      const res = results[finalType];
-
+      const res = translations[currentLang].results[finalType];
       document.getElementById("auraName").innerText = res.name;
       document.getElementById("coreVibe").innerText = res.core;
       document.getElementById("strength").innerText = res.strength;
@@ -403,16 +446,10 @@
       document.getElementById("loveStyle").innerText = res.love;
       document.getElementById("advice").innerText = res.advice;
 
-      const caption =
+      const caption = 
 `I took the Aura Test and got: ${res.name}
-
-✨ Core vibe: ${res.core}
-
-Try yours here 👇
-(put your website link)
-
-#AuraTest #MyVibe #MainCharacterEnergy #TikTokTest #PersonalityTest`;
-
+✨ ${translations[currentLang].labelCore} ${res.core}
+#AuraTest #MyVibe #TikTokTest`;
       document.getElementById("captionBox").innerText = caption;
     }
 
@@ -423,131 +460,72 @@ Try yours here 👇
 
     function copyCaption() {
       const text = document.getElementById("captionBox").innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Caption copied! Paste it into TikTok.");
-      });
+      navigator.clipboard.writeText(text).then(() => alert("Copied!"));
     }
 
     function downloadCard() {
       const canvas = document.getElementById("resultCanvas");
       const ctx = canvas.getContext("2d");
+      const res = translations[currentLang].results[finalType];
+      const t = translations[currentLang];
 
-      const res = results[finalType];
-
-      // Background gradient
       const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
-
-      if (finalType === "purple") {
-        gradient.addColorStop(0, "#6a11cb");
-        gradient.addColorStop(1, "#2d005f");
-      } else if (finalType === "pink") {
-        gradient.addColorStop(0, "#ff4eb8");
-        gradient.addColorStop(1, "#ff8bd3");
-      } else if (finalType === "blue") {
-        gradient.addColorStop(0, "#2575fc");
-        gradient.addColorStop(1, "#0a3d62");
-      } else if (finalType === "yellow") {
-        gradient.addColorStop(0, "#ffb300");
-        gradient.addColorStop(1, "#ff6f00");
-      }
+      const colors = { 
+        purple: ["#6a11cb", "#2d005f"], pink: ["#ff4eb8", "#ff8bd3"], 
+        blue: ["#2575fc", "#0a3d62"], yellow: ["#ffb300", "#ff6f00"] 
+      };
+      gradient.addColorStop(0, colors[finalType][0]);
+      gradient.addColorStop(1, colors[finalType][1]);
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 1080, 1920);
-
-      // Title
       ctx.fillStyle = "white";
-      ctx.font = "bold 70px Arial";
-      ctx.fillText("My Aura Result", 80, 200);
-
-      // Aura Name
-      ctx.font = "bold 85px Arial";
-      wrapText(ctx, res.name, 80, 350, 920, 95);
-
-      // Box
+      ctx.font = "bold 60px Arial";
+      ctx.fillText(currentLang === 'ko' ? "나의 아우라 결과" : "My Aura Result", 80, 200);
+      ctx.font = "bold 80px Arial";
+      wrapText(ctx, res.name, 80, 350, 920, 90);
       ctx.fillStyle = "rgba(255,255,255,0.15)";
-      roundRect(ctx, 60, 520, 960, 950, 40, true, false);
-
+      roundRect(ctx, 60, 520, 960, 950, 40, true);
       ctx.fillStyle = "white";
-      ctx.font = "bold 52px Arial";
-      ctx.fillText("Core Vibe:", 100, 620);
-
-      ctx.font = "40px Arial";
-      wrapText(ctx, res.core, 100, 690, 880, 55);
-
-      ctx.font = "bold 52px Arial";
-      ctx.fillText("Strength:", 100, 860);
-      ctx.font = "40px Arial";
-      wrapText(ctx, res.strength, 100, 930, 880, 55);
-
-      ctx.font = "bold 52px Arial";
-      ctx.fillText("Weakness:", 100, 1100);
-      ctx.font = "40px Arial";
-      wrapText(ctx, res.weakness, 100, 1170, 880, 55);
-
-      ctx.font = "bold 52px Arial";
-      ctx.fillText("Love Style:", 100, 1340);
-      ctx.font = "40px Arial";
-      wrapText(ctx, res.love, 100, 1410, 880, 55);
-
-      // Footer
-      ctx.font = "bold 45px Arial";
-      ctx.fillText("#AuraTest", 80, 1780);
-
-      ctx.font = "35px Arial";
-      ctx.fillText("Try yours on our website!", 80, 1850);
-
-      // Download
+      const drawStat = (label, value, y) => {
+        ctx.font = "bold 45px Arial"; ctx.fillText(label, 100, y);
+        ctx.font = "35px Arial"; wrapText(ctx, value, 100, y + 60, 880, 50);
+      };
+      drawStat(t.labelCore, res.core, 620);
+      drawStat(t.labelStrength, res.strength, 860);
+      drawStat(t.labelWeakness, res.weakness, 1100);
+      drawStat(t.labelLove, res.love, 1340);
+      ctx.font = "bold 40px Arial"; ctx.fillText("#AuraTest", 80, 1780);
+      
       const link = document.createElement("a");
-      link.download = "aura_result.png";
-      link.href = canvas.toDataURL("image/png");
+      link.download = `aura_${currentLang}.png`;
+      link.href = canvas.toDataURL();
       link.click();
     }
 
-    // Wrap text helper
     function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
       const words = text.split(" ");
       let line = "";
-
       for (let n = 0; n < words.length; n++) {
         let testLine = line + words[n] + " ";
-        let metrics = ctx.measureText(testLine);
-        let testWidth = metrics.width;
-
-        if (testWidth > maxWidth && n > 0) {
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
           ctx.fillText(line, x, y);
           line = words[n] + " ";
           y += lineHeight;
-        } else {
-          line = testLine;
-        }
+        } else { line = testLine; }
       }
       ctx.fillText(line, x, y);
     }
 
-    // Rounded rectangle helper
-    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-      if (typeof radius === "number") {
-        radius = { tl: radius, tr: radius, br: radius, bl: radius };
-      } else {
-        radius = { tl: 0, tr: 0, br: 0, bl: 0, ...radius };
-      }
-
+    function roundRect(ctx, x, y, w, h, r, fill) {
       ctx.beginPath();
-      ctx.moveTo(x + radius.tl, y);
-      ctx.lineTo(x + width - radius.tr, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
-      ctx.lineTo(x + width, y + height - radius.br);
-      ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
-      ctx.lineTo(x + radius.bl, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
-      ctx.lineTo(x, y + radius.tl);
-      ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+      ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y);
       ctx.closePath();
-
       if (fill) ctx.fill();
-      if (stroke) ctx.stroke();
     }
   </script>
-
 </body>
 </html>
