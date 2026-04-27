@@ -1,414 +1,553 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>프리미엄 로또 번호 생성기 & AI 분석</title>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-    <style>
-        :root {
-            --primary-color: #4A90E2;
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Aura Color Test</title>
 
-        body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            margin: 0;
-            padding: 20px 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-gradient);
-            color: #333;
-        }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #111;
+    }
 
-        .container {
-            width: 90%;
-            max-width: 500px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 2.5rem;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
+    header {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      padding: 60px 20px;
+      text-align: center;
+      color: white;
+    }
 
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #4A90E2, #67B26F);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    header h1 {
+      margin: 0;
+      font-size: 40px;
+    }
 
-        .ball-container {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 2rem;
-            justify-content: center;
-            min-height: 60px;
-        }
+    header p {
+      margin-top: 12px;
+      font-size: 16px;
+      opacity: 0.9;
+    }
 
-        .ball {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            font-size: 1.2rem;
-            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.2), 2px 4px 10px rgba(0,0,0,0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-        .ball.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
 
-        .button-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-        }
+    .question {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
 
-        button {
-            padding: 14px 28px;
-            font-size: 1rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: #2575fc;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: 0.2s;
+    }
 
-        .btn-generate {
-            background: #4A90E2;
-            color: white;
-            flex-grow: 2;
-        }
+    .btn:hover {
+      background: #6a11cb;
+    }
 
-        .btn-generate:hover { background: #357ABD; transform: translateY(-2px); }
-        .btn-generate:active { transform: translateY(0); }
+    .start-btn {
+      padding: 16px 22px;
+      font-size: 18px;
+      border-radius: 18px;
+      width: 100%;
+      background: #111;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
 
-        .btn-copy {
-            background: #fff;
-            color: #4A90E2;
-            border: 1px solid #4A90E2;
-            padding: 14px;
-        }
-        
-        .btn-copy:hover { background: #f0f7ff; }
+    .start-btn:hover {
+      background: #333;
+    }
 
-        .analysis-section {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            text-align: left;
-        }
+    .progress {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
 
-        .section-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #555;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+    .result-title {
+      font-size: 28px;
+      margin: 0;
+    }
 
-        .btn-analyze {
-            width: 100%;
-            background: linear-gradient(to right, #67B26F, #4ca2cd);
-            color: white;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
+    .aura-name {
+      font-size: 22px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
 
-        .analysis-result {
-            background: rgba(255,255,255,0.4);
-            border-radius: 15px;
-            padding: 15px;
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
+    .result-box {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 18px;
+      background: #f1f6ff;
+      border: 1px solid #d6e6ff;
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-cols: 2;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+    .result-box p {
+      margin: 10px 0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
 
-        .stat-box {
-            background: white;
-            padding: 8px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-        }
+    .share-area {
+      margin-top: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .stat-label { color: #888; display: block; margin-bottom: 3px; }
-        .stat-value { font-weight: bold; color: #333; }
+    .small-btn {
+      padding: 12px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
 
-        .rec-item {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed rgba(0,0,0,0.1);
-        }
+    .download-btn {
+      background: #00c853;
+      color: white;
+    }
 
-        .rec-label { font-size: 0.75rem; font-weight: bold; color: #666; margin-bottom: 5px; display: block; }
+    .download-btn:hover {
+      background: #00a946;
+    }
 
-        .history-item {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 8px;
-            padding: 8px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 12px;
-            animation: fadeIn 0.5s ease;
-        }
+    .copy-btn {
+      background: #ff9100;
+      color: white;
+    }
 
-        .history-ball, .rec-ball {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
+    .copy-btn:hover {
+      background: #e87f00;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .restart-btn {
+      background: #111;
+      color: white;
+    }
 
-        #loader {
-            display: none;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #4A90E2;
-            margin: 10px 0;
-        }
+    .restart-btn:hover {
+      background: #333;
+    }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .ball { width: 40px; height: 40px; font-size: 1rem; }
-            .container { padding: 1.5rem; width: 95%; }
-        }
-    </style>
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 12px;
+      color: #777;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    .caption-box {
+      background: #fff8e6;
+      border: 1px solid #ffe0a3;
+      padding: 15px;
+      border-radius: 14px;
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+      white-space: pre-line;
+    }
+  </style>
 </head>
+
 <body>
 
-    <div class="container">
-        <h1>Lotto Fortune</h1>
-        
-        <div class="ball-container" id="lotto-balls">
-            <div style="color: #aaa; font-style: italic;">행운의 번호를 생성해보세요!</div>
-        </div>
+  <header>
+    <h1>✨ My Aura Color Test</h1>
+    <p>Find your vibe. Download your TikTok result card.</p>
+  </header>
 
-        <div class="button-group">
-            <button class="btn-generate" onclick="generateLotto()">행운 번호 생성하기</button>
-            <button class="btn-copy" onclick="copyToClipboard()" title="복사">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-        </div>
+  <div class="container">
 
-        <div class="analysis-section">
-            <span class="section-title">📊 AI 통계 분석 추천</span>
-            <button class="btn-analyze" id="analyzeBtn" onclick="runAnalysis()">최근 100주 데이터 분석하기</button>
-            
-            <div id="loader">데이터 수집 및 분석 중... (<span id="progress">0</span>/100)</div>
-            
-            <div id="analysis-result" class="analysis-result">
-                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-                    <div class="stat-box" style="flex: 1;">
-                        <span class="stat-label">🔥 가장 많이 나온</span>
-                        <span id="hot-numbers" class="stat-value">-</span>
-                    </div>
-                    <div class="stat-box" style="flex: 1;">
-                        <span class="stat-label">❄️ 가장 적게 나온</span>
-                        <span id="cold-numbers" class="stat-value">-</span>
-                    </div>
-                </div>
-                
-                <div id="recommendation-list">
-                    <!-- 추천 번호가 여기에 들어감 -->
-                </div>
-            </div>
-        </div>
-
-        <div class="analysis-section" id="history-section" style="display: none; border-top: none; margin-top: 0.5rem;">
-            <span class="section-title">🕒 최근 생성 기록</span>
-            <div id="history-list"></div>
-        </div>
+    <!-- START -->
+    <div class="card" id="startCard">
+      <h2 style="margin-top:0;">🔥 Ready to discover your Aura?</h2>
+      <p>
+        Answer 7 quick questions and get your aura color result.<br>
+        Then download your result card for TikTok.
+      </p>
+      <button class="start-btn" onclick="startTest()">Start Test</button>
     </div>
 
-    <script>
-        let currentNumbers = [];
-        const API_PROXY = "https://api.allorigins.win/get?url=";
-        const LOTTO_API = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=";
+    <!-- TEST -->
+    <div class="card" id="testCard" style="display:none;">
+      <div class="question" id="questionText"></div>
+      <div id="answers"></div>
+      <div class="progress" id="progressText"></div>
+    </div>
 
-        function getBallColor(num) {
-            if (num <= 10) return '#fbc400'; // 노랑
-            if (num <= 20) return '#69c8f2'; // 파랑
-            if (num <= 30) return '#ff7272'; // 빨강
-            if (num <= 40) return '#aaa';    // 회색
-            return '#b0d840';                // 초록
+    <!-- RESULT -->
+    <div class="card" id="resultCard" style="display:none;">
+      <h2 class="result-title">🎉 Your Aura Result</h2>
+      <div class="aura-name" id="auraName"></div>
+
+      <div class="result-box">
+        <p><b>Core Vibe:</b> <span id="coreVibe"></span></p>
+        <p><b>Strength:</b> <span id="strength"></span></p>
+        <p><b>Weakness:</b> <span id="weakness"></span></p>
+        <p><b>Love Style:</b> <span id="loveStyle"></span></p>
+        <p><b>Today's Advice:</b> <span id="advice"></span></p>
+      </div>
+
+      <div class="caption-box" id="captionBox"></div>
+
+      <div class="share-area">
+        <button class="small-btn download-btn" onclick="downloadCard()">⬇ Download TikTok Result Card</button>
+        <button class="small-btn copy-btn" onclick="copyCaption()">📋 Copy Caption + Hashtags</button>
+        <button class="small-btn restart-btn" onclick="restartTest()">🔁 Try Again</button>
+      </div>
+
+      <canvas id="resultCanvas" width="1080" height="1920"></canvas>
+    </div>
+
+  </div>
+
+  <footer>
+    ⚠️ This is a fun personality test. Results are for entertainment only.<br>
+    © 2026 Aura Test Project
+  </footer>
+
+  <script>
+    // QUESTIONS
+    const questions = [
+      {
+        q: "When you're stressed, what do you do first?",
+        a: [
+          { text: "I disappear and recharge alone", type: "purple" },
+          { text: "I talk to someone immediately", type: "pink" },
+          { text: "I focus on work or goals", type: "blue" },
+          { text: "I distract myself with fun stuff", type: "yellow" }
+        ]
+      },
+      {
+        q: "Your friends describe you as...",
+        a: [
+          { text: "Mysterious and deep", type: "purple" },
+          { text: "Warm and caring", type: "pink" },
+          { text: "Calm and reliable", type: "blue" },
+          { text: "Funny and chaotic", type: "yellow" }
+        ]
+      },
+      {
+        q: "What is your biggest hidden power?",
+        a: [
+          { text: "Reading people easily", type: "purple" },
+          { text: "Making people feel loved", type: "pink" },
+          { text: "Staying strong in hard times", type: "blue" },
+          { text: "Making everyone laugh", type: "yellow" }
+        ]
+      },
+      {
+        q: "Your ideal weekend is...",
+        a: [
+          { text: "Late-night thoughts & music", type: "purple" },
+          { text: "Hanging out with loved ones", type: "pink" },
+          { text: "Planning my future / gym / routine", type: "blue" },
+          { text: "Doing random fun adventures", type: "yellow" }
+        ]
+      },
+      {
+        q: "What kind of love do you want?",
+        a: [
+          { text: "A soulmate who understands my silence", type: "purple" },
+          { text: "A romantic relationship full of affection", type: "pink" },
+          { text: "A stable love with trust and loyalty", type: "blue" },
+          { text: "A fun love that feels like a movie", type: "yellow" }
+        ]
+      },
+      {
+        q: "If someone hurts you, you...",
+        a: [
+          { text: "Cut them off quietly", type: "purple" },
+          { text: "Cry but forgive easily", type: "pink" },
+          { text: "Act fine, but never forget", type: "blue" },
+          { text: "Laugh it off but feel it later", type: "yellow" }
+        ]
+      },
+      {
+        q: "Your biggest weakness is...",
+        a: [
+          { text: "Overthinking too much", type: "purple" },
+          { text: "Caring too much about others", type: "pink" },
+          { text: "Being emotionally distant", type: "blue" },
+          { text: "Being too impulsive", type: "yellow" }
+        ]
+      }
+    ];
+
+    // RESULTS
+    const results = {
+      purple: {
+        name: "💜 Purple Aura (Mystic Energy)",
+        core: "You have main-character mystery vibes. People feel your depth.",
+        strength: "Highly intuitive, emotionally intelligent, creative mind.",
+        weakness: "Overthinking, emotional exhaustion, trusting too late.",
+        love: "You want a soulmate connection, not casual love.",
+        advice: "Stop analyzing everything. Your feelings are already the answer."
+      },
+      pink: {
+        name: "💗 Pink Aura (Soft Heart Energy)",
+        core: "You are warm, lovable, and people feel safe around you.",
+        strength: "Empathy, kindness, emotional healing power.",
+        weakness: "You give too much and forget yourself.",
+        love: "You love deeply and want constant affection.",
+        advice: "Don't chase love. Choose someone who chooses you back."
+      },
+      blue: {
+        name: "💙 Blue Aura (Calm Power Energy)",
+        core: "You're stable, mature, and secretly unstoppable.",
+        strength: "Discipline, loyalty, strong mindset under pressure.",
+        weakness: "You hide emotions too well and feel lonely sometimes.",
+        love: "You want loyalty, trust, and long-term love.",
+        advice: "You don't have to be strong all the time. Let someone in."
+      },
+      yellow: {
+        name: "💛 Yellow Aura (Chaos Fun Energy)",
+        core: "You bring laughter and energy everywhere you go.",
+        strength: "Charisma, creativity, fearless personality.",
+        weakness: "Impulsive choices, mood swings, getting bored easily.",
+        love: "You want exciting love that feels like a story.",
+        advice: "Your vibe is rare. Don't waste it on people who don't match your energy."
+      }
+    };
+
+    let currentIndex = 0;
+    let scores = { purple: 0, pink: 0, blue: 0, yellow: 0 };
+    let finalType = "purple";
+
+    function startTest() {
+      document.getElementById("startCard").style.display = "none";
+      document.getElementById("testCard").style.display = "block";
+      currentIndex = 0;
+      scores = { purple: 0, pink: 0, blue: 0, yellow: 0 };
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const qObj = questions[currentIndex];
+      document.getElementById("questionText").innerText = qObj.q;
+
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+
+      qObj.a.forEach((ans) => {
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.innerText = ans.text;
+        btn.onclick = () => selectAnswer(ans.type);
+        answersDiv.appendChild(btn);
+      });
+
+      document.getElementById("progressText").innerText =
+        `Question ${currentIndex + 1} / ${questions.length}`;
+    }
+
+    function selectAnswer(type) {
+      scores[type]++;
+
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("testCard").style.display = "none";
+      document.getElementById("resultCard").style.display = "block";
+
+      // find max
+      finalType = Object.keys(scores).reduce((a, b) =>
+        scores[a] > scores[b] ? a : b
+      );
+
+      const res = results[finalType];
+
+      document.getElementById("auraName").innerText = res.name;
+      document.getElementById("coreVibe").innerText = res.core;
+      document.getElementById("strength").innerText = res.strength;
+      document.getElementById("weakness").innerText = res.weakness;
+      document.getElementById("loveStyle").innerText = res.love;
+      document.getElementById("advice").innerText = res.advice;
+
+      const caption =
+`I took the Aura Test and got: ${res.name}
+
+✨ Core vibe: ${res.core}
+
+Try yours here 👇
+(put your website link)
+
+#AuraTest #MyVibe #MainCharacterEnergy #TikTokTest #PersonalityTest`;
+
+      document.getElementById("captionBox").innerText = caption;
+    }
+
+    function restartTest() {
+      document.getElementById("resultCard").style.display = "none";
+      document.getElementById("startCard").style.display = "block";
+    }
+
+    function copyCaption() {
+      const text = document.getElementById("captionBox").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Caption copied! Paste it into TikTok.");
+      });
+    }
+
+    function downloadCard() {
+      const canvas = document.getElementById("resultCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const res = results[finalType];
+
+      // Background gradient
+      const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+
+      if (finalType === "purple") {
+        gradient.addColorStop(0, "#6a11cb");
+        gradient.addColorStop(1, "#2d005f");
+      } else if (finalType === "pink") {
+        gradient.addColorStop(0, "#ff4eb8");
+        gradient.addColorStop(1, "#ff8bd3");
+      } else if (finalType === "blue") {
+        gradient.addColorStop(0, "#2575fc");
+        gradient.addColorStop(1, "#0a3d62");
+      } else if (finalType === "yellow") {
+        gradient.addColorStop(0, "#ffb300");
+        gradient.addColorStop(1, "#ff6f00");
+      }
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 1080, 1920);
+
+      // Title
+      ctx.fillStyle = "white";
+      ctx.font = "bold 70px Arial";
+      ctx.fillText("My Aura Result", 80, 200);
+
+      // Aura Name
+      ctx.font = "bold 85px Arial";
+      wrapText(ctx, res.name, 80, 350, 920, 95);
+
+      // Box
+      ctx.fillStyle = "rgba(255,255,255,0.15)";
+      roundRect(ctx, 60, 520, 960, 950, 40, true, false);
+
+      ctx.fillStyle = "white";
+      ctx.font = "bold 52px Arial";
+      ctx.fillText("Core Vibe:", 100, 620);
+
+      ctx.font = "40px Arial";
+      wrapText(ctx, res.core, 100, 690, 880, 55);
+
+      ctx.font = "bold 52px Arial";
+      ctx.fillText("Strength:", 100, 860);
+      ctx.font = "40px Arial";
+      wrapText(ctx, res.strength, 100, 930, 880, 55);
+
+      ctx.font = "bold 52px Arial";
+      ctx.fillText("Weakness:", 100, 1100);
+      ctx.font = "40px Arial";
+      wrapText(ctx, res.weakness, 100, 1170, 880, 55);
+
+      ctx.font = "bold 52px Arial";
+      ctx.fillText("Love Style:", 100, 1340);
+      ctx.font = "40px Arial";
+      wrapText(ctx, res.love, 100, 1410, 880, 55);
+
+      // Footer
+      ctx.font = "bold 45px Arial";
+      ctx.fillText("#AuraTest", 80, 1780);
+
+      ctx.font = "35px Arial";
+      ctx.fillText("Try yours on our website!", 80, 1850);
+
+      // Download
+      const link = document.createElement("a");
+      link.download = "aura_result.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+
+    // Wrap text helper
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(" ");
+      let line = "";
+
+      for (let n = 0; n < words.length; n++) {
+        let testLine = line + words[n] + " ";
+        let metrics = ctx.measureText(testLine);
+        let testWidth = metrics.width;
+
+        if (testWidth > maxWidth && n > 0) {
+          ctx.fillText(line, x, y);
+          line = words[n] + " ";
+          y += lineHeight;
+        } else {
+          line = testLine;
         }
+      }
+      ctx.fillText(line, x, y);
+    }
 
-        function generateLotto() {
-            const numbers = [];
-            while(numbers.length < 6) {
-                const num = Math.floor(Math.random() * 45) + 1;
-                if(!numbers.includes(num)) {
-                    numbers.push(num);
-                }
-            }
-            displayBalls(numbers);
-        }
+    // Rounded rectangle helper
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+      if (typeof radius === "number") {
+        radius = { tl: radius, tr: radius, br: radius, bl: radius };
+      } else {
+        radius = { tl: 0, tr: 0, br: 0, bl: 0, ...radius };
+      }
 
-        function displayBalls(numbers) {
-            numbers.sort((a, b) => a - b);
-            currentNumbers = [...numbers];
-            const container = document.getElementById('lotto-balls');
-            container.innerHTML = ''; 
+      ctx.beginPath();
+      ctx.moveTo(x + radius.tl, y);
+      ctx.lineTo(x + width - radius.tr, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+      ctx.lineTo(x + width, y + height - radius.br);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+      ctx.lineTo(x + radius.bl, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+      ctx.lineTo(x, y + radius.tl);
+      ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+      ctx.closePath();
 
-            numbers.forEach((num, index) => {
-                const ball = document.createElement('div');
-                ball.className = 'ball';
-                ball.innerText = num;
-                ball.style.backgroundColor = getBallColor(num);
-                container.appendChild(ball);
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
+    }
+  </script>
 
-                setTimeout(() => {
-                    ball.classList.add('show');
-                }, index * 100);
-            });
-            addToHistory(numbers);
-        }
-
-        function addToHistory(numbers) {
-            const section = document.getElementById('history-section');
-            const listContainer = document.getElementById('history-list');
-            section.style.display = 'block';
-
-            const historyItem = document.createElement('div');
-            historyItem.className = 'history-item';
-            
-            numbers.forEach(num => {
-                const hBall = document.createElement('div');
-                hBall.className = 'history-ball';
-                hBall.innerText = num;
-                hBall.style.backgroundColor = getBallColor(num);
-                historyItem.appendChild(hBall);
-            });
-
-            listContainer.prepend(historyItem);
-            if (listContainer.children.length > 5) listContainer.removeChild(listContainer.lastChild);
-        }
-
-        async function runAnalysis() {
-            const btn = document.getElementById('analyzeBtn');
-            const loader = document.getElementById('loader');
-            const resultDiv = document.getElementById('analysis-result');
-            const progressSpan = document.getElementById('progress');
-            
-            btn.style.display = 'none';
-            loader.style.display = 'block';
-            resultDiv.style.display = 'none';
-
-            // 회차 계산
-            const start = new Date('2002-12-07');
-            const now = new Date();
-            const latestNo = Math.floor((now - start) / (1000 * 60 * 60 * 24 * 7)) + 1;
-            
-            const results = [];
-            for(let i = 0; i < 30; i++) { // 속도를 위해 30주로 샘플링 (100주는 프록시 한계로 오래 걸림)
-                const drwNo = latestNo - i;
-                try {
-                    const response = await fetch(`${API_PROXY}${encodeURIComponent(LOTTO_API + drwNo)}`);
-                    const json = await response.json();
-                    const data = JSON.parse(json.contents);
-                    if(data.returnValue === "success") {
-                        results.push([data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6]);
-                        progressSpan.innerText = results.length * 3; // 100주 비율로 표시
-                    }
-                } catch (e) { break; }
-                if(results.length >= 10) break;
-            }
-
-            if(results.length === 0) {
-                alert("데이터를 가져오지 못했습니다. 샘플 분석을 진행합니다.");
-                for(let i=0; i<30; i++) results.push(Array.from({length:6}, () => Math.floor(Math.random()*45)+1));
-            }
-
-            const flat = results.flat();
-            const counts = {};
-            flat.forEach(n => counts[n] = (counts[n] || 0) + 1);
-            const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
-            
-            const hot = sorted.slice(0, 10).map(x => parseInt(x[0]));
-            const cold = sorted.slice(-10).map(x => parseInt(x[0]));
-
-            document.getElementById('hot-numbers').innerText = hot.slice(0,3).join(", ");
-            document.getElementById('cold-numbers').innerText = cold.slice(0,3).join(", ");
-
-            const recList = document.getElementById('recommendation-list');
-            recList.innerHTML = "";
-            
-            const strategies = [
-                { name: "🔥 다빈도 추천", nums: sample(hot, 6) },
-                { name: "⚖️ 균형 추천 (Hot+Cold)", nums: [...sample(hot, 3), ...sample(cold, 3)] }
-            ];
-
-            strategies.forEach(s => {
-                const div = document.createElement('div');
-                div.className = 'rec-item';
-                const nums = s.nums.sort((a,b) => a-b);
-                div.innerHTML = `
-                    <span class="rec-label">${s.name}</span>
-                    <div style="display: flex; gap: 5px; cursor: pointer;" onclick="useRecommended([${nums}])">
-                        ${nums.map(n => `<div class="rec-ball" style="background:${getBallColor(n)}">${n}</div>`).join('')}
-                    </div>
-                `;
-                recList.appendChild(div);
-            });
-
-            loader.style.display = 'none';
-            resultDiv.style.display = 'block';
-            btn.style.display = 'block';
-            btn.innerText = "데이터 다시 분석하기";
-        }
-
-        function useRecommended(nums) {
-            displayBalls(nums);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function sample(arr, n) {
-            return [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
-        }
-
-        function copyToClipboard() {
-            if (currentNumbers.length === 0) return alert('먼저 번호를 생성해주세요!');
-            const text = currentNumbers.join(', ');
-            navigator.clipboard.writeText(text).then(() => alert('번호가 복사되었습니다!'));
-        }
-    </script>
 </body>
 </html>
